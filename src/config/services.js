@@ -5,60 +5,77 @@ require('dotenv').config();
  * Each entry describes one upstream microservice:
  *   prefix   – the path the gateway exposes (stripped before forwarding)
  *   target   – where requests are forwarded
- *   pathRewrite – function that restores the prefix Express strips before
- *                 passing the request to http-proxy-middleware v3
+ *   pathRewrite – restores the stripped prefix while avoiding unwanted
+ *                 trailing slashes on root routes.
  */
+
+function rewrite(prefix) {
+  return (path) => (
+    path === '/' ? prefix : `${prefix}${path}`
+  );
+}
+
 const services = [
   {
     name: 'auth',
     prefix: '/auth',
     target: process.env.AUTH_SERVICE_URL || 'http://localhost:8080',
-    pathRewrite: (path) => `/auth${path}`,
+    pathRewrite: rewrite('/auth'),
   },
+
   {
     name: 'productos',
     prefix: '/products',
     target: process.env.PRODUCTOS_SERVICE_URL || 'http://localhost:8082',
-    pathRewrite: (path) => `/products${path}`,
+    pathRewrite: rewrite('/products'),
   },
+
   {
     name: 'categorias',
     prefix: '/categories',
     target: process.env.PRODUCTOS_SERVICE_URL || 'http://localhost:8082',
-    pathRewrite: (path) => `/categories${path}`,
+    pathRewrite: rewrite('/categories'),
   },
+
   {
     name: 'compras',
     prefix: '/cart',
     target: process.env.COMPRAS_SERVICE_URL || 'http://localhost:8084',
-    pathRewrite: (path) => `/cart${path}`,
+    pathRewrite: rewrite('/cart'),
   },
+
   {
     name: 'compras-admin',
     prefix: '/admin/carts',
     target: process.env.COMPRAS_SERVICE_URL || 'http://localhost:8084',
-    pathRewrite: (path) => `/admin/carts${path}`,
+    pathRewrite: rewrite('/admin/carts'),
   },
+
   {
     name: 'ordenes',
     prefix: '/orders',
     target: process.env.ORDENES_SERVICE_URL || 'http://localhost:8086',
-    pathRewrite: (path) => `/orders${path}`,
+    pathRewrite: rewrite('/orders'),
   },
+
   {
     name: 'pagos',
     prefix: '/api/payments',
     target: process.env.PAGOS_SERVICE_URL || 'http://localhost:8080',
-    pathRewrite: (path) => `/api/payments${path}`,
+    pathRewrite: rewrite('/api/payments'),
   },
+
   {
     name: 'pagos-by-order',
     prefix: '/api/orders',
     target: process.env.PAGOS_SERVICE_URL || 'http://localhost:8080',
-    pathRewrite: (path) => `/api/orders${path}`,
+    pathRewrite: rewrite('/api/orders'),
   },
 ];
 
-const proxyTimeout = parseInt(process.env.PROXY_TIMEOUT || '10000', 10);
+const proxyTimeout = parseInt(
+  process.env.PROXY_TIMEOUT || '10000',
+  10
+);
 
 module.exports = { services, proxyTimeout };
