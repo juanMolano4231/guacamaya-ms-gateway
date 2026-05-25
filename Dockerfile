@@ -8,7 +8,7 @@ RUN npm ci --omit=dev
 
 # Copy application source
 COPY src/ ./src/
-COPY .env.example .env.example
+COPY .env .env
 
 EXPOSE 3000
 

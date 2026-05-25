@@ -1,75 +1,21 @@
-version: '3.9'
-
 services:
-
-  # ── API Gateway ─────────────────────────────────────────────────────────────
   gateway:
     build: .
     ports:
       - "3000:3000"
     environment:
       PORT: 3000
-      AUTH_SERVICE_URL:      http://ms-auth:8081
+      AUTH_SERVICE_URL:      http://ms-auth:8080
       PRODUCTOS_SERVICE_URL: http://ms-productos:8082
       COMPRAS_SERVICE_URL:   http://ms-compras:8084
       ORDENES_SERVICE_URL:   http://ms-ordenes:8086
-      PAGOS_SERVICE_URL:     http://ms-pagos:8088
+      PAGOS_SERVICE_URL:     http://ms-pagos:8080
       PROXY_TIMEOUT:         10000
       CORS_ORIGIN:           "*"
-    depends_on:
-      - ms-auth
-      - ms-productos
-      - ms-compras
-      - ms-ordenes
-      - ms-pagos
-    restart: unless-stopped
-    networks:
-      - guacamaya-net
-
-  # ── Microservices ────────────────────────────────────────────────────────────
-  # Point each `image` or `build.context` to the real service repository path.
-  # Replace the placeholder images below with your actual images/build contexts.
-
-  ms-auth:
-    image: guacamaya-auth
-    expose:
-      - "8081"
-    networks:
-      - guacamaya-net
-    restart: unless-stopped
-
-  ms-productos:
-    image: ms-productos-app
-    expose:
-      - "8082"
-    networks:
-      - guacamaya-net
-    restart: unless-stopped
-
-  ms-compras:
-    image: ms-compras-app
-    expose:
-      - "8084"
-    networks:
-      - guacamaya-net
-    restart: unless-stopped
-
-  ms-ordenes:
-    image: ms-ordenes-app
-    expose:
-      - "8086"
-    networks:
-      - guacamaya-net
-    restart: unless-stopped
-
-  ms-pagos:
-    image: ms-pagos-app
-    expose:
-      - "8088"
     networks:
       - guacamaya-net
     restart: unless-stopped
 
 networks:
   guacamaya-net:
-    driver: bridge
+    external: true
