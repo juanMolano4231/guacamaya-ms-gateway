@@ -6,9 +6,9 @@ services:
     environment:
       PORT: 3000
       AUTH_SERVICE_URL:      http://ms-auth:8080
-      PRODUCTOS_SERVICE_URL: http://ms-productos:8082
-      COMPRAS_SERVICE_URL:   http://ms-compras:8084
-      ORDENES_SERVICE_URL:   http://ms-ordenes:8086
+      PRODUCTOS_SERVICE_URL: http://ms-productos:3000
+      COMPRAS_SERVICE_URL:   http://ms-compras:3000
+      ORDENES_SERVICE_URL:   http://ms-ordenes:3000
       PAGOS_SERVICE_URL:     http://ms-pagos:8080
       PROXY_TIMEOUT:         10000
       CORS_ORIGIN:           "*"
